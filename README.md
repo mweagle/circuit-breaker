@@ -39,10 +39,11 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
                         allowed function are evaluated.
 
 3. Reference It
-      The circuit-breaker wraps either free functions or logically-related
-      functions defined on a single Object.  The wrapped function(s) are aliased
-      by the breaker so existing code transparently benefits from the
-      fail-fast behavior.
+
+  The circuit-breaker wraps either free functions or logically-related
+  functions defined on a single Object.  The wrapped function(s) are aliased
+  by the breaker so existing code transparently benefits from the
+  fail-fast behavior.
 
       1. For a "standalone" function
 

@@ -1,0 +1,26 @@
+{
+  "name": "circuit-breaker",
+  "version": "0.0.1",
+  "author": "Matt Weagle <mweagle@gmail.com>",
+  "description": "Port of Akka's CircuitBreaker",
+  "contributors": [{
+    "name": "Matt Weagle",
+    "email": "mweagle@gmail.com"
+  }],
+  "main": "./lib/circuit-breaker.js",
+  "keywords": ["distributed", "patterns"],
+  "dependencies": {
+    },
+  "analyze": false,
+  "devDependencies": {
+    "mocha": "1.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mweagle/phi-accrual-detector.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.8"
+  }
+}

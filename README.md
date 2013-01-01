@@ -36,7 +36,10 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
                         to transition to the *HALF-OPEN* state.  When a breaker enters
                         the *HALF-OPEN* state, the next call will be attempted, but
                         subsequent calls will fail fast until the results of the
-                        allowed function are evaluated.
+                        allowed function are evaluated.  If the allowed function
+                        succeeds, the failure count is set to zero and the breaker
+                        enters the *CLOSED* state.  If it fails, the breaker enters the
+                        *OPEN* state and the reset timer is restarted.
 
 3. Reference It
 

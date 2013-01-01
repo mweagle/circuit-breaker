@@ -14,7 +14,9 @@ Why Use It
 
 Because you have distributed resources and you would prefer not to self-inflict a
 [DOS-style attack](http://en.wikipedia.org/wiki/Denial-of-service_attack) while
-minimizing call latency in the presence of errors.
+minimizing call latency in the presence of errors.  See also the
+[Netflix](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html) post
+on creating resilient systems.
 
 How to Use It
 ===
@@ -37,6 +39,11 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
                         allowed function are evaluated.
 
 3. Reference It
+      The circuit-breaker wraps either free functions or logically-related
+      functions defined on a single Object.  The wrapped function(s) are aliased
+      by the breaker so existing code transparently benefits from the
+      fail-fast behavior.
+
       1. For a "standalone" function
 
       ```
@@ -60,7 +67,7 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
         host) :
 
       ```
-        var api_adapter = function()
+        var RemoteServiceAPI = function()
         {
           this.do_it = function(input, callback)
           {
@@ -76,11 +83,12 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
           };
         };
         // Wrapping an 'API object' in a circuit breaker
-        // will make all the source functions available on the
+        // makes all the source functions available on the
         // circuit-breaker instance.  All aliased functions
-        // will share the same circuit-breaker instance
-        // and therefore contribute to the error count.
-        var gated_api_adapter = circuit_breaker.new_circuit_breaker(api_adapter,
+        // share the same circuit-breaker instance
+        // so their aggregated behavior contributes to a
+        // single error count.
+        var gated_api_adapter = circuit_breaker.new_circuit_breaker(new RemoteServiceAPI(),
                                                                     5 /* max_failures */,
                                                                     10 /* call_timeout_ms */,
                                                                     10 /* reset_timeout_ms */);
@@ -92,26 +100,26 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
 Error Cases
 ===
 There are two states that the circuit-breaker Errors-out on and interrupts the
-expected control flow:
+normal control flow:
   - Breaker is in the *OPEN* state: The breaker has been tripped and all
                                     function calls made while in this state will
-                                    fail-fast with an Error indicating that result.
+                                    fail-fast with a `CircuitBreakerError` indicating that state.
   - Function timeout: A given call has timed out and the callback is being invoked
-              with an Error instance indicating that result.  Note that any results
-              (or Errors) returned after the function timeout has triggered will be
-              ignored.
+              with a `TimeoutError` instance indicating that outcome.
+              *NOTE*: any results (or Errors) returned after a `TimeoutError` has
+              been raised will be discarded.
 
 Sounds Great - What's the Catch?
 ===
 
 The circuit-breaker depends on (asynchronous-only, CPS-style) functions whose
 *last* argument is a callback of the form: `callback(error, result)`.  In order
-to tap the call sequence the circuit-breaker assumes that the last argument is a
-callback function whose inputs can be used to update the breaker state.  Once the
-circuit-breaker has been updated with the function results, they are passed
-to the callback function.
+to tap the call sequence the circuit-breaker assumes that the last function argument
+is a callback function whose inputs can be used to update the breaker state.  Once the
+circuit-breaker state has been updated with the tapped results, the (error, result)
+instance are passed to the original callback function.
 
-Therefore, supported signatures include:
+Therefore, "circuit-gatable" signatures include:
 
     var zero_args = function(callback) {...};
     var one_arg = function(input1, callback) {...};
@@ -126,7 +134,6 @@ You're on your own.
 
 TODOs
 ===
-* v0.0.1 circuit-breaker error states return standard `Error` objects with
-custom messages.  Akka uses [Exception subclasses](https://github.com/akka/akka/blob/master/akka-actor/src/main/scala/akka/pattern/CircuitBreaker.scala#L504)
-which is something to consider.
-* Allow alternative function signatures?
+* Allow alternative function signatures
+* Use a [phi-accrual-detector](https://github.com/mweagle/phi-accrual-detector) instead
+  of a simple error count

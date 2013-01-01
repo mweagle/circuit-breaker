@@ -1,7 +1,7 @@
 circuit-breaker
 ====================
 
-What Is It?
+What Is It
 ===
 
 This is a port of
@@ -9,7 +9,7 @@ This is a port of
 to [Node.js](http://nodejs.org).  When properly configured it can aid in [preventing cascading failures
 in distributed systems](http://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html).
 
-Why Use It?
+Why Use It
 ===
 
 Because you have distributed resources and you would prefer not to self-inflict a
@@ -24,7 +24,7 @@ How to Use It
 copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-actor/src/main/scala/akka/pattern/CircuitBreaker.scala#L78).
     1. `max_failures`:  The maximum error count to accumulate
                       before the gated function is assumed to have tripped
-                      the breaker into the *OPEN* state.  An error is indicated
+                      the breaker into the *OPEN* state.  NOTE:  An error is indicated
                       by invoking the `callback(e, result)` with a "truthy"
                       Error value.
     2. `call_timeout_ms`: Duration (in MS) that should be used to limit the execution time
@@ -55,7 +55,7 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
         });
       ```
 
-      2. For a set of semantically related functions attached to an Object (_eg_,
+      2. For a set of semantically related functions attached to an Object (*eg*,
         a set of methods that correspond to an *RPC*-ish HTTP API exposed by a single
         host) :
 
@@ -87,39 +87,38 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
         });
       ```
 
-Failure Cases
+Error Cases
 ===
-There are two error states that the circuit-breaker Errors-out on:
-- Breaker is in the *OPEN* state: The breaker has been tripped and all
-                                  function calls made while in this state will
-                                  fail-fast with an Error indicating that result.
-- Function timeout: A given call has timed out and the callback is being invoked
-            with an Error instance indicating that result.  Note that any results
-            (or Errors) returned after the function timeout has triggered will be
-            ignored.
+There are two states that the circuit-breaker Errors-out on and interrupts the
+expected control flow:
+  - Breaker is in the *OPEN* state: The breaker has been tripped and all
+                                    function calls made while in this state will
+                                    fail-fast with an Error indicating that result.
+  - Function timeout: A given call has timed out and the callback is being invoked
+              with an Error instance indicating that result.  Note that any results
+              (or Errors) returned after the function timeout has triggered will be
+              ignored.
 
-What's the Catch?
+Sounds Great - What's the Catch?
 ===
 
 The circuit-breaker depends on (asynchronous-only, CPS-style) functions whose
-*final* argument is a callback of the form: `callback(error, results)`.  In order
-to tap the call sequence the circuit-breaker assumes that the last argument is the
-callback function whose evaulation can be used to update the breaker status.
+*last* argument is a callback of the form: `callback(error, result)`.  In order
+to tap the call sequence the circuit-breaker assumes that the last argument is a
+callback function whose inputs can be used to update the breaker state.  Once the
+circuit-breaker has been updated with the function results, they are passed
+to the callback function.
 
 Therefore, supported signatures include:
 
-    ```
     var zero_args = function(callback) {...};
     var one_arg = function(input1, callback) {...};
     var two_args = function(input1, input2, callback) {...};
     // turtles...
-    ```
 
-But, if your function looks like:
+But, if your function parameters are ordered as in:
 
-  ```
-  breaker_needed = function(callback, input1, input2)
-  ```
+    var breaker_needed = function(callback, input1, input2)
 
 You're on your own.
 

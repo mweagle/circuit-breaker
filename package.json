@@ -1,6 +1,6 @@
 {
   "name": "circuit-breaker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Matt Weagle <mweagle@gmail.com>",
   "description": "Port of Akka's CircuitBreaker",
   "contributors": [{

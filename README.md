@@ -77,7 +77,9 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
         };
         // Wrapping an 'API object' in a circuit breaker
         // will make all the source functions available on the
-        // circuit-breaker instance
+        // circuit-breaker instance.  All aliased functions
+        // will share the same circuit-breaker instance
+        // and therefore contribute to the error count.
         var gated_api_adapter = circuit_breaker.new_circuit_breaker(api_adapter,
                                                                     5 /* max_failures */,
                                                                     10 /* call_timeout_ms */,

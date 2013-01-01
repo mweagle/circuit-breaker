@@ -15,7 +15,7 @@ Why Use It
 Because you have distributed resources and you would prefer not to self-inflict a
 [DOS-style attack](http://en.wikipedia.org/wiki/Denial-of-service_attack) while
 minimizing call latency in the presence of errors.  See also the
-[Netflix](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html) post
+[Netflix post](http://techblog.netflix.com/2011/12/making-netflix-api-more-resilient.html)
 on creating resilient systems.
 
 How to Use It

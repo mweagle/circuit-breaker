@@ -118,8 +118,8 @@ The circuit-breaker depends on (asynchronous-only, CPS-style) functions whose
 *last* argument is a callback of the form: `callback(error, result)`.  In order
 to tap the call sequence the circuit-breaker assumes that the last function argument
 is a callback function whose inputs can be used to update the breaker state.  Once the
-circuit-breaker state has been updated with the tapped results, the (error, result)
-instance are passed to the original callback function.
+circuit-breaker state has been updated with the tapped results, the `(error, result)`
+values are passed to the original callback function.
 
 Therefore, "circuit-gatable" signatures include:
 

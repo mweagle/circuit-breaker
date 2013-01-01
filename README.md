@@ -104,9 +104,10 @@ There are two states that the circuit-breaker Errors-out on and interrupts the
 normal control flow:
   - Breaker is in the *OPEN* state: The breaker has been tripped and all
                                     function calls made while in this state will
-                                    fail-fast with a `CircuitBreakerError` indicating that state.
-  - Function timeout: A given call has timed out and the callback is being invoked
-              with a `TimeoutError` instance indicating that outcome.
+                                    fail-fast with a `CircuitBreakerError` instance
+                                    provided to the callback.
+  - Function timeout: A given call has timed out and the callback is invoked
+              with a `TimeoutError` instance.
               *NOTE*: any results (or Errors) returned after a `TimeoutError` has
               been raised will be discarded.
 

@@ -48,9 +48,9 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
   by the breaker so existing code transparently benefits from the
   fail-fast behavior.
 
-      1. For a "standalone" function
+  1. For a "standalone" function
 
-      ```
+      ```javascript
         var source_function = function(callback)
         {
           process.nextTick(function () {
@@ -66,11 +66,11 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
         });
       ```
 
-      2. For a set of semantically related functions attached to an Object (*eg*,
-        a set of methods that correspond to an *RPC*-ish HTTP API exposed by a single
-        host) :
+  2. For a set of semantically related functions attached to an Object (*eg*,
+     a set of methods that correspond to an *RPC*-ish HTTP API exposed by a single
+     host) :
 
-      ```
+      ```javascript
         var RemoteServiceAPI = function()
         {
           this.do_it = function(input, callback)
@@ -126,14 +126,18 @@ values are passed to the original callback function.
 
 Therefore, "circuit-gatable" signatures include:
 
-    var zero_args = function(callback) {...};
-    var one_arg = function(input1, callback) {...};
-    var two_args = function(input1, input2, callback) {...};
-    // turtles...
+```javascript
+var zero_args = function(callback) {...};
+var one_arg = function(input1, callback) {...};
+var two_args = function(input1, input2, callback) {...};
+// turtles...
+```
 
 But, if your function parameters are ordered as in:
 
-    var breaker_needed = function(callback, input1, input2)
+```javascript
+var breaker_needed = function(callback, input1, input2)
+```
 
 You're on your own.
 

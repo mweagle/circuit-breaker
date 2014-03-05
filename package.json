@@ -1,6 +1,6 @@
 {
   "name": "circuit-breaker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Matt Weagle <mweagle@gmail.com>",
   "description": "Port of Akka's CircuitBreaker",
   "contributors": [{
@@ -13,7 +13,7 @@
     },
   "analyze": false,
   "devDependencies": {
-    "mocha": "1.7.0"
+    "mocha": "1.17.1"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,6 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10.0"
   }
 }

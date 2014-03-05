@@ -53,9 +53,7 @@ copied from the [Akka source](https://github.com/akka/akka/blob/master/akka-acto
       ```javascript
         var source_function = function(callback)
         {
-          process.nextTick(function () {
-            callback(null, null);
-          });
+          setImmediate(callback, null, null);
         };
         var gated_function = circuit_breaker.new_circuit_breaker(source_function,
                                                                   5 /* max_failures */,

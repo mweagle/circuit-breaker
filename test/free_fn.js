@@ -71,9 +71,7 @@ describe('Single function Circuit Breakers', function() {
 
     var wrapped_function = function(callback)
     {
-      process.nextTick(function () {
-        callback(null, null);
-      });
+      setImmediate(callback, null, null);
     };
     // Repeatedly call the callback
     var gated_function = circuit_breaker.new_circuit_breaker(wrapped_function,
@@ -105,9 +103,7 @@ describe('Single function Circuit Breakers', function() {
     var wrapped_function = function(some_value, some_value2, callback)
     {
       assert(some_value === PASS_THROUGH_VALUE, 'Arguments MUST be propagated');
-      process.nextTick(function () {
-        callback(null, some_value2);
-      });
+      setImmediate(callback, null, some_value2);
     };
     // Repeatedly call the callback
     var gated_function = circuit_breaker.new_circuit_breaker(wrapped_function,
@@ -140,10 +136,8 @@ describe('Single function Circuit Breakers', function() {
 
     var wrapped_function = function(callback)
     {
-      var error = (sample_count >= 5 && sample_count <= 15) ? "Expected failure" : null;
-      process.nextTick(function () {
-        callback(error, null);
-      });
+      var error = (sample_count >= 5 && sample_count <= 15) ? 'Expected failure' : null;
+      setImmediate(callback, error, null);
     };
     // Repeatedly call the callback
     var gated_function = circuit_breaker.new_circuit_breaker(wrapped_function,

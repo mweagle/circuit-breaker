@@ -43,9 +43,7 @@ var ObjectBreaker = function(fn_error_provider)
     self[eachName] = function(callback)
     {
       assert(this === self, 'This pointer MUST be preserved!');
-      process.nextTick(function () {
-        callback(self.error_provider(), null);
-      });
+      setImmediate(callback, self.error_provider(), null);
     };
   });
 };
